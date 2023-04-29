@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view 
 from .models import Base
 from .serializers import BaseSerializer
+from django.http import Http404
+from rest_framework.views import exception_handler
 
 @api_view(['GET', 'POST'])
 def all_base(request):
@@ -37,3 +39,10 @@ def base_detail(request, id):
     elif request.method == 'DELETE':
         myBase.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+def error_404(exc, context):
+    response = exception_handler(exc, context)
+    if isinstance(exc, Http404):
+        response.data = {"error": "Not found"}
+        response.status_code = 404
+    return response
