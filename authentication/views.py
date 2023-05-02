@@ -18,14 +18,14 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token = AccessToken.for_user(user)
-        print(token)
-        return Response({
+        theUser = LoginSerializer(user, context=self.get_serializer_context()).data
+        response = Response({
             "token": str(token),
-            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        }).set_cookie({
-            "token": str(token),
-            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        }, httponly=True)
+            "user": theUser,
+        })
+        response.set_cookie("token", str(token), httponly=True)
+        response.set_cookie("user", theUser, httponly=True)
+        return response
 
 
 class LoginAPI(generics.GenericAPIView):
@@ -38,13 +38,14 @@ class LoginAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data
         token = AccessToken.for_user(user)
-        return Response({
+        theUser = LoginSerializer(user, context=self.get_serializer_context()).data
+        response = Response({
             "token": str(token),
-            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        }).set_cookie({
-            "token": str(token),
-            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        }, httponly=True)
+            "user": theUser,
+        })
+        response.set_cookie("token", str(token), httponly=True)
+        response.set_cookie("user", theUser, httponly=True)
+        return response
 
 class LogoutAPI(generics.GenericAPIView):
     authentication_classes = [JWTAuthentication]
