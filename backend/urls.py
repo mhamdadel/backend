@@ -8,5 +8,6 @@ urlpatterns = [
     path('api/base/<int:id>/', base_detail),
     path('api/auth/', include('authentication.urls')),
     path('api/ecommerce/', include('ecommerce.urls')),
+    path('orders/', include('orders.urls')),
     # re_path(r'^.*$', error_404),
 ]

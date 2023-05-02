@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-y0o=+^(=^p#r0r*yis7tajy#ylyw#5f5q56rgubcth-zei$m&6
 # ALLOWED_HOSTS = []
 
 DEBUG = False
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['http://localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
   'http://localhost:8000',
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'backend',
     'authentication',
     'ecommerce',
+    'orders',
     'knox',
     'rest_framework',
     'rest_framework_simplejwt',
@@ -153,7 +154,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    '../../.venv/Lib/site-packages/django/contrib/admin/static'
 ]
 
 # Default primary key field type
