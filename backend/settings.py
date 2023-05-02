@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'authentication',
     'ecommerce',
     'orders',
+    'payment',
     'knox',
     'rest_framework',
     'rest_framework_simplejwt',

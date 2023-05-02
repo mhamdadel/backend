@@ -13,17 +13,6 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-class Category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField()
-    imagePath = models.TextField()
-    REQUIRED_FIELDS = ['name']
-    class Meta:
-        ordering = ['name']
-
-    def __str__(self):
-        return self.name
-
 
 class Product(models.Model):
     title= models.CharField(max_length=256)
