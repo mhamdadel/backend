@@ -23,3 +23,19 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Product(models.Model):
+    title= models.CharField(max_length=256)
+    price= models.FloatField()
+    # Category = models.CharField(choices=Categoryname)
+    description= models.TextField()
+    Image = models.ImageField()
+    inStock= models.IntegerField()
+   
+    
+    REQUIRED_FIELDS = ['title', 'price', 'description', 'Image', 'inStock']
+
+
+    def __str__(self):
+        return self.title

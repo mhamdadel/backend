@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-y0o=+^(=^p#r0r*yis7tajy#ylyw#5f5q56rgubcth-zei$m&6
 
 # ALLOWED_HOSTS = []
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
@@ -153,7 +153,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    '../../.venv/Lib/site-packages/django/contrib/admin/static'
+   
 ]
 
 # Default primary key field type
