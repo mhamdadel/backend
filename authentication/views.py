@@ -18,10 +18,14 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
         token = AccessToken.for_user(user)
+        print(token)
         return Response({
             "token": str(token),
             "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        })
+        }).set_cookie({
+            "token": str(token),
+            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
+        }, httponly=True)
 
 
 class LoginAPI(generics.GenericAPIView):
@@ -37,7 +41,10 @@ class LoginAPI(generics.GenericAPIView):
         return Response({
             "token": str(token),
             "user": LoginSerializer(user, context=self.get_serializer_context()).data,
-        })
+        }).set_cookie({
+            "token": str(token),
+            "user": LoginSerializer(user, context=self.get_serializer_context()).data,
+        }, httponly=True)
 
 class LogoutAPI(generics.GenericAPIView):
     authentication_classes = [JWTAuthentication]
