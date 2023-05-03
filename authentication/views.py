@@ -2,7 +2,8 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .models import CustomUser
 import jwt
 class NotAuthenticatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -71,3 +72,25 @@ class LogoutAPI(generics.GenericAPIView):
             return response
         except AttributeError:
             pass
+
+class ProfileAPIView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [is_auth]
+
+    def get_object(self):
+        userId = jwt.decode(self.request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=userId)
+        return user
+
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        # add any additional data to the response
+        response_data = {
+            'user': serializer.data,
+            'message': 'Account details updated successfully.'
+        }
+        return Response(response_data)
