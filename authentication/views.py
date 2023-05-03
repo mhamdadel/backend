@@ -3,10 +3,20 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import RegisterSerializer, LoginSerializer
-
+import jwt
 class NotAuthenticatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
-        return not request.user.is_authenticated
+        try:
+            return not jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        except Exception as e:
+            return True
+    
+class is_auth(permissions.BasePermission):
+    def has_permission(self, request, view):
+        try:
+            return jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        except Exception as e:
+            return False
     
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -49,13 +59,15 @@ class LoginAPI(generics.GenericAPIView):
 
 class LogoutAPI(generics.GenericAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [is_auth]
 
     def post(self, request, *args, **kwargs):
         try:
-            request.auth.delete()
+            response = Response({
+                "message": "Successfully logged out"
+            })
+            response.delete_cookie("token")
+            response.delete_cookie("user")
+            return response
         except AttributeError:
             pass
-        return Response({
-            "message": "Successfully logged out"
-        })

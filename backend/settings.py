@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-y0o=+^(=^p#r0r*yis7tajy#ylyw#5f5q56rgubcth-zei$m&6
 
 # ALLOWED_HOSTS = []
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
@@ -70,7 +70,10 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'ROTATE_REFRESH_TOKENS': False,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': 'PROJECT!@#%^2434',
 }
+
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': False,
 }
