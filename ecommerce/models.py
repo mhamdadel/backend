@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField()
-    imagePath = models.TextField()
+    imagePath = models.TextField(null=True)
     REQUIRED_FIELDS = ['name']
     class Meta:
         ordering = ['name']

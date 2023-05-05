@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'ecommerce',
     'orders',
     'payment',
+    'cart',
+    'wishlist',
     'knox',
+    'paypal.standard.ipn',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -152,6 +155,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+#django paypal settings
+
+PAYPAL_RECEIVER_EMAIL='merehan.yehia.abdellatif@gmail.com',
+PAYPAL_TEST=True,
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
