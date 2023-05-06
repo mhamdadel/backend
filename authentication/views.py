@@ -5,6 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import CustomUser
 import jwt
+
 class NotAuthenticatedPermission(permissions.BasePermission):
     def has_permission(self, request, view):
         try:
@@ -86,8 +87,12 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
     def patch(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.validate(request.data)
         serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
+        password = serializer.validated_data.get('password')
+        if password:
+            instance.set_password(password)
+        serializer.save()
         # add any additional data to the response
         response_data = {
             'user': serializer.data,

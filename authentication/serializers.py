@@ -43,6 +43,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         password = validated_data.pop('password')
+        validated_data.pop('password2', None)  # Remove password2 field from validated_data
         user = CustomUser(**validated_data)
         user.set_password(password)
         user.save()
@@ -73,9 +74,11 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'email', 'username', 'first_name', 'last_name', 'phone_number', 'password', 'password2']
+        # fields = ['id', 'email', 'username', 'first_name', 'last_name', 'phone_number', 'password', 'password2']
+        fields = '__all__'
         extra_kwargs = {
             'password': {'write_only': True},
+            'password2': {'write_only': True},
             'phone_number': {'required': True},
         }
 
