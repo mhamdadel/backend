@@ -46,7 +46,10 @@ INSTALLED_APPS = [
     'ecommerce',
     'orders',
     'payment',
+    'cart',
+    'wishlist',
     'knox',
+    'paypal.standard.ipn',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -151,6 +154,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+#django paypal settings
+PAYPAL_TEST=True,
+PAYPAL_RECEIVER_EMAIL='merehan.yehia.abdellatif@gmail.com',
 
 
 # Static files (CSS, JavaScript, Images)

@@ -1,7 +1,7 @@
 from django.db import models
 from orders.models import Order
 
-# Create your models here.
+
 class Payment(models.Model):
     payment_id = models.BigAutoField(primary_key=True)
     oid = models.ForeignKey(Order, on_delete=models.CASCADE,related_name='orders_payment')
@@ -16,5 +16,8 @@ class Payment(models.Model):
     shipping_Price = models.IntegerField(default=50)
 
     def get_total_amount(self):
-        return (self.amount - self.shipping_Price)
+        order = self.oid
+        return order.get_total_amount() + self.shipping_Price    
     
+    def save(self):
+        self.amount = self.get_total_amount()
