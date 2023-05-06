@@ -22,7 +22,7 @@ def cart(self, request):
        return Response({"message":"You are not logged in"})
 
 
-api_view('POST')
+api_view(['POST'])
 def add_to_cart(self, request):
     if request.method == 'POST':
       #   custom_user = CustomUser.objects.get(email=request.user.email)

@@ -11,6 +11,8 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('paypal/',include('paypal.standard.ipn.urls')),
     path('payment/', include('payment.urls')),
+    path('cart/', include('cart.urls')),
+    path('wishlist/', include('wishlist.urls')),
 
     # re_path(r'^.*$', error_404),
 ]
