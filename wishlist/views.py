@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.core.paginator import Paginator
       
-@api_view(['GET','POST','DELETE'])
+@api_view(['GET','POST'])
 def wishlist_crud(self,request):
    if request.method=='GET':
       if request.user.is_authenticated:
@@ -33,7 +33,8 @@ def wishlist_crud(self,request):
            return Response({"message":"User is not logged in"})
          
    
-      
+@api_view('DELETE')
+def wishlist_delete(request, id):
    if request.method=='DELETE':
          if request.user.is_authenticated:
             product_id=int(request.GET('product_id'))
