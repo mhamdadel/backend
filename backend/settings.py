@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import cloudinary
 
 from datetime import timedelta
 import os
@@ -170,5 +171,10 @@ STATICFILES_DIRS = [
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+
+cloudinary.config(cloud_name='deg0m2eu4',
+                  api_key='137771358466589',
+                  api_secret='oJqNBAgaFpMfRxoCbWpkV6qR060')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

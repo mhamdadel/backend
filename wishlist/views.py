@@ -33,7 +33,7 @@ def wishlist_crud(self,request):
            return Response({"message":"User is not logged in"})
          
    
-@api_view('DELETE')
+@api_view(['DELETE'])
 def wishlist_delete(request, id):
    if request.method=='DELETE':
          if request.user.is_authenticated:

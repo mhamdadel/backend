@@ -1,9 +1,12 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import CategorySerializer
-from .models import Category
+from .serializers import CategorySerializer,ProductSerilaizer
+from .models import Category, Product
 from rest_framework import permissions
+from rest_framework.generics import CreateAPIView
+from rest_framework.parsers import MultiPartParser
+
 
 class IsAdminOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -56,3 +59,11 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
         queryset = self.get_queryset().filter(name=name)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+
+class UploadImage(CreateAPIView):
+
+    serializer_class = ProductSerilaizer
+    parser_classes = (MultiPartParser,)
+    queryset = Product.objects.all()

@@ -12,6 +12,13 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductSerilaizer(serializers.ModelSerializer):
 
+
     class Meta: 
         model = Product
-        fileds = '__all__'
+        fileds = ['title','price','description', "image_url", "image", 'inStock']
+
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation.pop("image")
+        return representation

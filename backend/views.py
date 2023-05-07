@@ -7,6 +7,8 @@ from .serializers import BaseSerializer
 from django.http import Http404
 from rest_framework.views import exception_handler
 
+
+
 @api_view(['GET', 'POST'])
 def all_base(request):
     if request.method == 'GET':
