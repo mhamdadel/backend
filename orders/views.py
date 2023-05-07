@@ -13,7 +13,7 @@ from authentication.models import CustomUser
 from .serializers import Order_ItemSerializer, OrderSerializer
 
 # @login_required
-@api_view('GET')
+@api_view()
 def order_list(request):
     if request.user.is_authenticated:
         custom_user = CustomUser.objects.get(email=request.user.email)
@@ -25,7 +25,7 @@ def order_list(request):
         return Response(serializer.data)
      
 
-@api_view('POST')
+@api_view(['POST'])
 def add_order(request):
      serializer = Order_ItemSerializer(data=request.data)
      if serializer.is_valid():
@@ -35,7 +35,7 @@ def add_order(request):
          return Response(serializer.errors)
 
 # @login_required
-@api_view('GET')
+@api_view()
 def order_detail(request, order_id):
  if request.user.is_authenticated:
     custom_user = CustomUser.objects.get(email=request.user.email)
