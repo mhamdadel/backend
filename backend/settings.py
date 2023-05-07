@@ -15,6 +15,8 @@ from datetime import timedelta
 import os
 from pathlib import Path
 
+import dj_database_url
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -119,14 +121,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'neondb',
-    'USER': 'muhammed.adel.elshall',
-    'PASSWORD': 'SmMQPk14sTjv',
-    'HOST': 'ep-square-shape-508845.us-east-2.aws.neon.tech',
-    'PORT': '5432',
-  }
+  'default': dj_database_url.parse('postgres://dajngo_project_user:5ulnvH9MR7mByxmuEMrgPefZJA5ZBBW9@dpg-chbqnprhp8u0162j3dng-a.oregon-postgres.render.com/dajngo_project')
 }
 
 
