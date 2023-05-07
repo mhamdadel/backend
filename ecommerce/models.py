@@ -18,7 +18,7 @@ class Category(models.Model):
 class Product(models.Model):
     title= models.CharField(max_length=256)
     price= models.FloatField()
-    # Category = models.CharField(choices=Categoryname)
+    # Category = models.ForeignKey(Category, )
     description= models.TextField()
     Image = CloudinaryField("image")
     inStock= models.IntegerField()
