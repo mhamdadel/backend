@@ -13,12 +13,7 @@ class Order_ItemSerializer(serializers.Serializer):
         model = OrderItem
         fields = ['cart_id', 'quantity', 'price', 'image']
 
-    def create(self, validated_data):
-        order_items_data = validated_data.pop('order_items')
-        order = Order.objects.create(**validated_data)
-        for order_item_data in order_items_data:
-            OrderItem.objects.create(order=order, **order_item_data)
-        return order
+
     
     
 class OrderSerializer(serializers.Serializer):
@@ -35,4 +30,9 @@ class OrderSerializer(serializers.Serializer):
     phone_number = serializers.CharField()
     status = serializers.CharField()
 
-
+    def create(self, validated_data):
+        order_items_data = validated_data.pop('order_items')
+        order = Order.objects.create(**validated_data)
+        for order_item_data in order_items_data:
+            OrderItem.objects.create(order=order, **order_item_data)
+        return order
