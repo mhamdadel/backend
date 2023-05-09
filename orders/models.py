@@ -11,7 +11,6 @@ class Order(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True)
     cancellation_deadline = models.DateTimeField()
     shipping_address = models.TextField()
-    billing_address = models.TextField()
     cancellation_fees=models.IntegerField(default=0)
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',

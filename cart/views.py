@@ -8,7 +8,7 @@ from django.core.paginator import Paginator
 
 
 @api_view()
-def cart(self, request):
+def cart(request):
     if request.method == 'GET':
       if request.user.is_authenticated:
         cart = Cart.objects.get(user=request.user)
@@ -23,7 +23,7 @@ def cart(self, request):
 
 
 api_view(['POST'])
-def add_to_cart(self, request):
+def add_to_cart(request):
     if request.method == 'POST':
       #   custom_user = CustomUser.objects.get(email=request.user.email)
         if request.CustomUser.is_authenticated:
@@ -47,7 +47,7 @@ def add_to_cart(self, request):
          
 
 api_view(['DELETE','PUT'])
-def cart_item(self, request):
+def cart_item(request):
    if request.method == 'DELETE':
       if request.user.is_authenticated:
          product_id=int(request.GET('product_id'))

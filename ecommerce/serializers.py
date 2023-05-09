@@ -15,10 +15,10 @@ class ProductSerilaizer(serializers.ModelSerializer):
 
     class Meta: 
         model = Product
-        fileds = ['title','price','description', "image_url", "image", 'inStock']
-
+        # fileds = ['title','price','description', "image_url", "image", 'inStock']
+        fields= '__all__'
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation.pop("image")
+        # representation.pop("image")
         return representation

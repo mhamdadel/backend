@@ -10,7 +10,7 @@ from django.http import JsonResponse
 from .models import Order
 from cart.models import Cart
 from authentication.models import CustomUser
-from .serializers import OrderSerializer
+from .serializers import Order_ItemSerializer, OrderSerializer
 
 # @login_required
 @api_view()
@@ -25,13 +25,22 @@ def order_list(request):
         return Response(serializer.data)
      
 
+@api_view(['POST'])
+def add_order(request):
+     serializer = Order_ItemSerializer(data=request.data)
+     if serializer.is_valid():
+         serializer.save()
+         return Response(serializer.data)
+     else:
+         return Response(serializer.errors)
+
 # @login_required
 @api_view()
 def order_detail(request, order_id):
  if request.user.is_authenticated:
     custom_user = CustomUser.objects.get(email=request.user.email)
     order = get_object_or_404(Order, id=order_id, uid=custom_user)
-    serializer = OrderSerializer(order)
+    serializer = Order_ItemSerializer(order)
     return Response(serializer.data)
 
 # @login_required
