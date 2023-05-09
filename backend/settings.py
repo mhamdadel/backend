@@ -124,6 +124,15 @@ DATABASES = {
   'default': dj_database_url.parse('postgres://dajngo_project_user:5ulnvH9MR7mByxmuEMrgPefZJA5ZBBW9@dpg-chbqnprhp8u0162j3dng-a.oregon-postgres.render.com/dajngo_project')
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
