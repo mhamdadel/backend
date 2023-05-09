@@ -62,6 +62,50 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     
 
 
+class ProductList(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerilaizer
+
+    def get(self, request):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+
+class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerilaizer
+    lookup_field = 'title'
+
+    def get(self, request, title):
+        try:
+            queryset = Product.objects.get(title = title)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data[0])
+        except Exception as e:
+            return Response({
+                "message": str(e),
+            })
+    
+    def patch(self, request, title):
+        queryset = self.get_queryset().filter(title=title)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    
+    def delete(self, request, title):
+        queryset = self.get_queryset().filter(title=title)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
 class UploadImage(CreateAPIView):
 
     serializer_class = ProductSerilaizer
