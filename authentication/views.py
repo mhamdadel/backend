@@ -4,6 +4,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import CustomUser
+from cart.models import Cart
 import jwt
 
 class NotAuthenticatedPermission(permissions.BasePermission):
@@ -29,6 +30,9 @@ class RegisterAPI(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        if user : 
+            cartForNewUser = Cart(user_id=user.id)
+            cartForNewUser.save()
         token = AccessToken.for_user(user)
         theUser = LoginSerializer(user, context=self.get_serializer_context()).data
         response = Response({
