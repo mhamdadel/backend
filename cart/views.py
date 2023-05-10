@@ -16,65 +16,33 @@ def cart(request):
          token = request.COOKIES.get('token')      
          decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
          user_id = decoded_token.get('user_id')        
-      #   cart = Cart.objects.get(user=user_id)
          cart = Cart.objects.filter(user=user_id)
-      #   serializer = CartSerializer(cart)
-      #   paginated=Paginator(cart , 5)
-      #   page_number=request.GET.get('page')
-      #   page_obj=paginated.get_page(page_number)
-      #   return Response({"data":serializer.data,"pagination":page_obj})
-         paginated = Paginator(cart, 5)
-         page_number = request.GET.get('page')
-         page_obj = paginated.get_page(page_number)
-         serializer = CartSerializer(page_obj, many=True)
-         return Response({"data": serializer.data})  
-
-
-# @api_view(['POST'])
-# @permission_classes([is_auth])
-# def add_to_cart(request,id):
-#     if request.method == 'POST':
-#             token = request.COOKIES.get('token')      
-#             decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
-#             user_id = decoded_token.get('user_id')   
-#             product_id = request.POST.get('product_id')
-#             product = Product.objects.get(id=product_id)
-#             product_quantity = int(request.POST.get('product_quantity'))
-#             if product:
-#                 cart, created = Cart.objects.get_or_create(user=user_id)
-#                 data={'id':id}
-#                 cart_item, created = CartItem.objects.get_or_create(data=data,cart=cart, product=product)
-#                #  if created:                   
-#                 cart_item.quantity = product_quantity
-#                 serializer = CartItemSerializer(cart_item)
-#                 serializer.save()
-#                 return Response(serializer.data, status=201)                   
-#             # return Response(status=404)
-#             else:
-#              return Response({'message':"Product not found"})
-
+         p= Paginator(cart,5)
+         page = request.GET.get('page')
+         carts = p.get_page(page)
+         serializer = CartSerializer(carts , many=True)
+         return Response(serializer.data)
 
 @api_view(['POST'])
 @permission_classes([is_auth])
-def add_to_cart(request, id):
+def add_to_cart(request, product_id):
     if request.method == 'POST':
         token = request.COOKIES.get('token')      
         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
-        user_id = decoded_token.get('user_id')   
-        product_id = request.POST.get('product_id')
-        product_quantity = request.POST.get('product_quantity')
-        try:
-            product = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            return Response({'message': "Product not found"}, status=404)
+        user_id = decoded_token.get('user_id')  
+        quantity =request.data.get('quantity')
+        if quantity is not None:
+            quantity = int(quantity)
+        product = Product.objects.get(id=product_id)
         if product:
             cart, created = Cart.objects.get_or_create(user=user_id)
-            data = {'id': id}
-            cart_item, created = CartItem.objects.get_or_create(data=data, cart=cart, product=product)
-            cart_item.quantity = product_quantity
-            serializer = CartItemSerializer(cart_item)
-            serializer.save()
-            return Response(serializer.data, status=201)
+            serializer = CartItemSerializer(data={'cart': cart, 'product': product_id, 'quantity': quantity}, context={'request': request, 'cart': cart, 'method': request.method})
+            # cart_item.quantity = quantity
+            if serializer.is_valid():
+               serializer.save()
+               return Response(serializer.data, status=201)
+            else:
+               return Response(serializer.errors)
         else:
             return Response({'message': "Product not found"}, status=404)
               
@@ -98,19 +66,25 @@ def cart_item(request,id):
 
     
    if request.method=='PUT':
-         token = request.COOKIES.get('token')      
-         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
-         user_id = decoded_token.get('user_id')  
-         # serializer=CartItemSerializer(request.data)
-        #  product_id = int(request.data.get('product_id'))
-         if(Cart.objects.filter(user=user_id)):
-          cart_item = CartItem.objects.get(id=id)
-          serializer = CartItemSerializer(cart_item, data=request.data)
-          if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+        token = request.COOKIES.get('token')  
+        decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
+        user_id = decoded_token.get('user_id')  
+        if Cart.objects.filter(user=user_id).exists():
+          if CartItem.objects.filter(id=id).exists():
+            cart_item = CartItem.objects.select_related('cart', 'product').get(id=id)
+            serializer= CartItemSerializer(cart_item, data=request.data, context={'request': request, 'method': request.method})
+            # print(cart_item.product)
+            # print(request.data)
+            if serializer.is_valid():
+              serializer.save(cart=cart_item.cart, product=cart_item.product)           
+              return Response(serializer.data)
+            else:
+              return Response(serializer.errors)
           else:
-            return Response(serializer.errors)
+            return Response("Cart Item doesn't exist")
+
+             
+             
 
 
 
