@@ -4,9 +4,7 @@ from ecommerce.models import Product
 from wishlist.models import Wishlist
 from rest_framework import serializers
 from rest_framework.response import Response
-from authentication.serializers import UserSerializer
 from authentication.models import CustomUser
-import json
 
 
 class WishlistSerializer(serializers.Serializer):
