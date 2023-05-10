@@ -9,8 +9,9 @@ class Order(models.Model):
     order_id = models.BigAutoField(primary_key=True)
     uid = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='orders')
     createdAt = models.DateTimeField(auto_now_add=True)
-    cancellation_deadline = models.DateTimeField()
+    cancellation_deadline = models.DateTimeField(null=True, default=None)   
     shipping_address = models.TextField()
+    # billing_address = models.TextField(null=True)
     cancellation_fees=models.IntegerField(default=0)
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',
