@@ -1,6 +1,6 @@
 from requests import request
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
@@ -9,23 +9,25 @@ from django.utils import timezone
 from django.http import JsonResponse
 from .models import Order
 from cart.models import Cart
+from authentication.views import is_auth
 from authentication.models import CustomUser
 from .serializers import Order_ItemSerializer, OrderSerializer
 
 # @login_required
 @api_view()
+@permission_classes([is_auth])
 def order_list(request):
-    if request.user.is_authenticated:
-        custom_user = CustomUser.objects.get(email=request.user.email)
-        orders = Order.objects.filter(uid=custom_user)
-        p = Paginator(orders,3)
-        page = request.GET.get('page')
-        orderss = p.get_page(page)
-        serializer = OrderSerializer(orderss , many=True)
-        return Response(serializer.data)
+    custom_user = CustomUser.objects.get(email=request.user.email)
+    orders = Order.objects.filter(uid=custom_user)
+    p = Paginator(orders,3)
+    page = request.GET.get('page')
+    orderss = p.get_page(page)
+    serializer = OrderSerializer(orderss , many=True)
+    return Response(serializer.data)
      
 
 @api_view(['POST'])
+@permission_classes([is_auth])
 def add_order(request):
      serializer = Order_ItemSerializer(data=request.data)
      if serializer.is_valid():
@@ -36,14 +38,15 @@ def add_order(request):
 
 # @login_required
 @api_view()
+@permission_classes([is_auth])
 def order_detail(request, order_id):
- if request.user.is_authenticated:
     custom_user = CustomUser.objects.get(email=request.user.email)
     order = get_object_or_404(Order, id=order_id, uid=custom_user)
     serializer = Order_ItemSerializer(order)
     return Response(serializer.data)
 
 # @login_required
+@permission_classes([is_auth])
 def cancel_order(request, order_id):
     custom_user = CustomUser.objects.get(email=request.user.email)
     order = get_object_or_404(Order, id=order_id, uid=custom_user)
@@ -55,7 +58,7 @@ def cancel_order(request, order_id):
     
     order.delete()
 
-
+@permission_classes([is_auth])
 def check_out(request, order_id):
     request.session['order_id']=order_id
     Cart.clear()
