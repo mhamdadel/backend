@@ -12,6 +12,16 @@ class WishlistSerializer(serializers.Serializer):
     user_id= serializers.PrimaryKeyRelatedField(read_only=True)
     # product_id=ProductSerilaizer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+        # product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), required=False)
+    product_details = serializers.SerializerMethodField(read_only=True)    
+
+    class Meta:
+        model = Wishlist
+        fields = ['id','product_id', 'product_details']
+
+    def get_product_details(self, obj):
+        product_id = Product.objects.filter(id=obj.product_id.id).first()
+        return ProductSerilaizer(product_id).data
 
     def validate(self, data):
         request = self.context.get('request')
