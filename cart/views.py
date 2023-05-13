@@ -1,3 +1,4 @@
+from ecommerce.serializers import ProductSerilaizer
 import jwt
 from cart.models import Cart,CartItem
 from cart.serializers import CartItemSerializer,CartSerializer
@@ -20,7 +21,7 @@ def cart(request):
          p= Paginator(cart,5)
          page = request.GET.get('page')
          carts = p.get_page(page)
-         serializer = CartSerializer(carts , many=True)
+         serializer = CartSerializer(carts , many=True, context={'request': request})
          return Response(serializer.data)
 
 @api_view(['POST'])
@@ -38,6 +39,9 @@ def add_to_cart(request, product_id):
             cart, created = Cart.objects.get_or_create(user=user_id)
             serializer = CartItemSerializer(data={'cart': cart, 'product': product_id, 'quantity': quantity}, context={'request': request, 'cart': cart, 'method': request.method})
             # cart_item.quantity = quantity
+            # product_dict = ProductSerilaizer(product).data
+            # # print(product_dict['id'])
+            # serializer = CartItemSerializer(data={'cart': cart, 'product': product_dict, 'quantity': quantity}, context={'request': request, 'cart': cart, 'method': request.method})
             if serializer.is_valid():
                serializer.save()
                return Response(serializer.data, status=201)
