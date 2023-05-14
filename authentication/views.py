@@ -5,8 +5,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from orders.serializers import OrderSerializer
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import CustomUser
-from cart.models import Cart
-from cart.serializers import CartSerializer
+from cart.models import Cart, CartItem
+from cart.serializers import CartItemSerializer, CartSerializer
 from wishlist.serializers import WishlistSerializer
 import jwt
 
@@ -103,9 +103,18 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         }
         return Response(response_data)
     
-class MyOrder(generics.GenericAPIView):
+class MyOrders(generics.GenericAPIView):
     permission_classes = [is_auth]
     def get(self, request, *args):
+        myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=myId)
+        orders = user.orders.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+    
+class MyOrderDetails(generics.GenericAPIView):
+    permission_classes = [is_auth]
+    def get(self, request, id):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
         orders = user.orders.all()
@@ -117,16 +126,21 @@ class MyWishListItems(generics.GenericAPIView):
     def get(self, request, *args):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
-        wishListItems = user.orders.all()
+        wishListItems = user.wishlist.all()
         serializer = WishlistSerializer(wishListItems, many=True)
         return Response(serializer.data)
 
-class myCart(generics.GenericAPIView):
+class MyCart(generics.GenericAPIView):
     permission_classes = [is_auth]
     def get(self, request, *args):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
-        cart = user.orders.all()
-        serializer = CartSerializer(cart, many=True)
+        cartItems =  user.cart.cart_items.all()
+        # cart = Cart.objects.get(user=user)
+        # cartItems = CartItem.objects.get(cart=cart)
+        serializer = CartItemSerializer(cartItems, many=True)
+        print ()
+        # ser = CartSerializer(Cart.objects.get(user_id=myId), many=False)
         return Response(serializer.data)
+        # return Response(serializer.data)
 

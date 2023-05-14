@@ -21,7 +21,8 @@ class CustomUserChangeForm(UserChangeForm):
 class CustomUserAdminForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        exclude = ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+        fields = '__all__'
+        # exclude = ('is_staff', 'is_superuser', 'groups', 'user_permissions')
 
 class CustomUserAdmin(UserAdmin):
     form = CustomUserAdminForm
