@@ -26,18 +26,24 @@ def cart(request):
 
 @api_view(['POST'])
 @permission_classes([is_auth])
-def add_to_cart(request, product_id):
+def add_to_cart(request, id):
     if request.method == 'POST':
         token = request.COOKIES.get('token')      
         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
-        user_id = decoded_token.get('user_id')  
-        quantity =request.data.get('quantity')
-        if quantity is not None:
-            quantity = int(quantity)
-        product = Product.objects.get(id=product_id)
+        user_id = decoded_token.get('user_id')
+        # quantity =1
+        # quantity =request.data.get('quantity')
+        # if quantity is not None:
+        #     quantity = int(quantity)
+        product = Product.objects.get(id=id)
+        instock=product.inStock
+        instock=instock-1
+        # print(product.inStock)
+        product.inStock = instock  
+        product.save() 
         if product:
             cart, created = Cart.objects.get_or_create(user=user_id)
-            serializer = CartItemSerializer(data={'cart': cart, 'product': product_id, 'quantity': quantity}, context={'request': request, 'cart': cart, 'method': request.method})
+            serializer = CartItemSerializer(data={'cart': cart, 'product': id, 'quantity': 1}, context={'request': request, 'cart': cart, 'method': request.method})
             # cart_item.quantity = quantity
             # product_dict = ProductSerilaizer(product).data
             # # print(product_dict['id'])
@@ -76,6 +82,21 @@ def cart_item(request,id):
         if Cart.objects.filter(user=user_id).exists():
           if CartItem.objects.filter(id=id).exists():
             cart_item = CartItem.objects.select_related('cart', 'product').get(id=id)
+            product = Product.objects.get(id=cart_item.product.id)
+            print(request.data)
+            quantity=request.data.get('quantity')
+            quantity=int(quantity)
+            print(quantity)
+            if(quantity>cart_item.quantity):
+              instock=product.inStock
+              instock=instock-quantity
+              product.inStock = instock  
+              product.save() 
+            else:
+              instock=product.inStock
+              instock=instock+quantity
+              product.inStock = instock  
+              product.save()           
             serializer= CartItemSerializer(cart_item, data=request.data, context={'request': request, 'method': request.method})
             # print(cart_item.product)
             # print(request.data)

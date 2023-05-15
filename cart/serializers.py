@@ -10,7 +10,6 @@ class CartItemSerializer(serializers.Serializer):
     product_details = serializers.SerializerMethodField(read_only=True)
     quantity=serializers.IntegerField();
 
-
     class Meta:
         model = CartItem
         fields = ['id', 'cart', 'product', 'product_details', 'quantity']
