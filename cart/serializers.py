@@ -5,9 +5,9 @@ from rest_framework import serializers
 
 class CartItemSerializer(serializers.Serializer):
     id=serializers.StringRelatedField();
-    cart=serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all(),required=False);
+    cart=serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all(),required=False)
     product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all(), required=False)
-    product_details = serializers.SerializerMethodField(read_only=True)    
+    product_details = serializers.SerializerMethodField(read_only=True)
     quantity=serializers.IntegerField();
 
 

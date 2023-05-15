@@ -113,9 +113,8 @@ def cancel_order(request, order_id):
     if order.status != 'PENDING':
         return Response(serializer.data)
     if timezone.now() > order.createdAt + timezone.timedelta(days=2):
-        return Response(serializer.data)
+            order.delete()
     
-    order.delete()
 
 @permission_classes([is_auth])
 def check_out(request, order_id):

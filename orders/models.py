@@ -1,9 +1,8 @@
+from ecommerce.models import Product
 from django.db import models
 from authentication.models import CustomUser
 from django.core.validators import RegexValidator
 from django.utils import timezone
-from cart.models import Cart
-# Create your models here.
 
 class Order(models.Model):
     order_id = models.BigAutoField(primary_key=True)
@@ -44,8 +43,7 @@ class Order(models.Model):
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
-    cart_id = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    image= models.ImageField(upload_to='order_item')
+    product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="products",default=6)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     def get_total(self):
