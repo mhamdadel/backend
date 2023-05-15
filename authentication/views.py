@@ -119,7 +119,7 @@ class MyOrderDetails(generics.GenericAPIView):
         user = CustomUser.objects.get(id=myId)
         orders = user.orders.all()
         serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data[0])
     
 class MyWishListItems(generics.GenericAPIView):
     permission_classes = [is_auth]
