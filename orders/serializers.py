@@ -1,5 +1,6 @@
 from authentication.models import CustomUser
 from cart.models import Cart
+from ecommerce.models import Product
 from orders.models import OrderItem
 from orders.models import Order
 from rest_framework import serializers
@@ -8,13 +9,13 @@ from rest_framework import serializers
 
 class Order_ItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
-    cart_id = serializers.PrimaryKeyRelatedField(queryset=Cart.objects.all())
+    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
     quantity = serializers.IntegerField()
     price = serializers.DecimalField(max_digits=10, decimal_places=2)
-    image= serializers.ImageField(max_length=None, use_url=True,required=False)
+    # image= serializers.ImageField(max_length=None, use_url=True,required=False)
     class Meta:
         model = OrderItem
-        fields = ['order','cart_id', 'quantity', 'price', 'image']
+        fields = ['order','product', 'quantity', 'price', 'image']
         
     # def create_order_item(self, validated_data):
     #     order_item = OrderItem.objects.create(**validated_data)
