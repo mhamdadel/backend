@@ -10,7 +10,8 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         # fields = ['email', 'password', 'password2', 'first_name', 'last_name', 'phone_number', 'city','state', 'zip_code', 'country', 'date_joined','last_login', 'is_staff', 'is_active', 'is_super']
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
         extra_kwargs = {
             'password': {'write_only': True},
             'phone_number': {'required': True},
@@ -75,7 +76,8 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         # fields = ['id', 'email', 'username', 'first_name', 'last_name', 'phone_number', 'password', 'password2']
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
         extra_kwargs = {
             'password': {'write_only': True},
             'password2': {'write_only': True},

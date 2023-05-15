@@ -8,6 +8,7 @@ class Cart(models.Model):
         CustomUser,
         on_delete=models.CASCADE,
         primary_key=True,
+        related_name='cart',
     )
     
 class CartItem(models.Model):

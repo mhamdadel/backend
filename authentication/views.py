@@ -1,10 +1,13 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from orders.serializers import OrderSerializer
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 from .models import CustomUser
-from cart.models import Cart
+from cart.models import Cart, CartItem
+from cart.serializers import CartItemSerializer, CartSerializer
+from wishlist.serializers import WishlistSerializer
 import jwt
 
 class NotAuthenticatedPermission(permissions.BasePermission):
@@ -23,7 +26,6 @@ class is_auth(permissions.BasePermission):
     
 class RegisterAPI(generics.GenericAPIView):
     serializer_class = RegisterSerializer
-    authentication_classes = [JWTAuthentication]
     permission_classes = [NotAuthenticatedPermission]
 
     def post(self, request, *args, **kwargs):
@@ -46,7 +48,6 @@ class RegisterAPI(generics.GenericAPIView):
 
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
-    authentication_classes = [JWTAuthentication]
     permission_classes = [NotAuthenticatedPermission]
 
     def post(self, request, *args, **kwargs):
@@ -64,7 +65,6 @@ class LoginAPI(generics.GenericAPIView):
         return response
 
 class LogoutAPI(generics.GenericAPIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [is_auth]
 
     def post(self, request, *args, **kwargs):
@@ -80,7 +80,6 @@ class LogoutAPI(generics.GenericAPIView):
 
 class ProfileAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    authentication_classes = [JWTAuthentication]
     permission_classes = [is_auth]
 
     def get_object(self):
@@ -103,3 +102,45 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
             'message': 'Account details updated successfully.'
         }
         return Response(response_data)
+    
+class MyOrders(generics.GenericAPIView):
+    permission_classes = [is_auth]
+    def get(self, request, *args):
+        myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=myId)
+        orders = user.orders.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+    
+class MyOrderDetails(generics.GenericAPIView):
+    permission_classes = [is_auth]
+    def get(self, request, id):
+        myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=myId)
+        orders = user.orders.all()
+        serializer = OrderSerializer(orders, many=True)
+        return Response(serializer.data)
+    
+class MyWishListItems(generics.GenericAPIView):
+    permission_classes = [is_auth]
+    def get(self, request, *args):
+        myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=myId)
+        wishListItems = user.wishlist.all()
+        serializer = WishlistSerializer(wishListItems, many=True)
+        return Response(serializer.data)
+
+class MyCart(generics.GenericAPIView):
+    permission_classes = [is_auth]
+    def get(self, request, *args):
+        myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
+        user = CustomUser.objects.get(id=myId)
+        cartItems =  user.cart.cart_items.all()
+        # cart = Cart.objects.get(user=user)
+        # cartItems = CartItem.objects.get(cart=cart)
+        serializer = CartItemSerializer(cartItems, many=True)
+        print ()
+        # ser = CartSerializer(Cart.objects.get(user_id=myId), many=False)
+        return Response(serializer.data)
+        # return Response(serializer.data)
+

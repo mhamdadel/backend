@@ -5,6 +5,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import gettext_lazy as _
 from .models import CustomUser
 from django.contrib.auth.forms import UserChangeForm
+from django import forms
 
 # Register your models here.
 
@@ -17,8 +18,14 @@ class CustomUserChangeForm(UserChangeForm):
         model = CustomUser
         fields = '__all__'
 
+class CustomUserAdminForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+        # exclude = ('is_staff', 'is_superuser', 'groups', 'user_permissions')
+
 class CustomUserAdmin(UserAdmin):
-    form = CustomUserChangeForm
+    form = CustomUserAdminForm
 
     list_display = ('email', 'first_name', 'last_name', 'phone_number', 'city', 'state', 'zip_code', 'country', 'is_staff')
     list_filter = ('is_staff', 'is_active', 'groups')
