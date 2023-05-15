@@ -4,8 +4,9 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import CategorySerializer,ProductSerilaizer
 from .models import Category, Product
 from rest_framework import permissions
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.parsers import MultiPartParser
+from rest_framework.pagination import PageNumberPagination
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -62,13 +63,15 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     
 
 
-class ProductList(generics.ListCreateAPIView):
+class ProductList(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerilaizer
+
 
     def get(self, request):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
+        
         return Response(serializer.data)
     
     def post(self, request):
@@ -105,6 +108,16 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     
+
+
+class APiProductListView(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerilaizer
+    pagination_class = PageNumberPagination
+
+
+
+
 
 class UploadImage(CreateAPIView):
 

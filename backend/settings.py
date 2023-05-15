@@ -70,7 +70,12 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    "EXCEPTION_HANDLER": "backend.views.error_404",
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 1,
+
+    "EXCEPTION_HANDLER": "backend.views.error_404"
+    
+        
 }
 
 SIMPLE_JWT = {
