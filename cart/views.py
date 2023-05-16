@@ -26,19 +26,15 @@ def cart(request):
 
 @api_view(['POST'])
 @permission_classes([is_auth])
-def add_to_cart(request, id):
+def add_to_cart(request):
     if request.method == 'POST':
         token = request.COOKIES.get('token')      
         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
         user_id = decoded_token.get('user_id')
-        # quantity =1
-        # quantity =request.data.get('quantity')
-        # if quantity is not None:
-        #     quantity = int(quantity)
+        id=request.data.get('id')
         product = Product.objects.get(id=id)
         instock=product.inStock
         instock=instock-1
-        # print(product.inStock)
         product.inStock = instock  
         product.save() 
         if product:

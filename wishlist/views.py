@@ -29,8 +29,9 @@ def wishlist_view(request):
 
 @api_view(['POST'])
 @permission_classes([is_auth])
-def wishlist_add(request,id):
+def wishlist_add(request):
  if request.method=='POST':
+         id=request.data.get('id')
          data = {'product_id': id}
          serializer = WishlistSerializer(data=data, context={'request': request})  
          if serializer.is_valid():
