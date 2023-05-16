@@ -4,12 +4,12 @@ from ecommerce.models import Product
 from orders.models import OrderItem
 from orders.models import Order
 from rest_framework import serializers
-
+from ecommerce.serializers import ProductSerilaizer
 
 
 class Order_ItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product = ProductSerilaizer(many=False, read_only=True)
     quantity = serializers.IntegerField()
     price = serializers.DecimalField(max_digits=10, decimal_places=2)
     # image= serializers.ImageField(max_length=None, use_url=True,required=False)

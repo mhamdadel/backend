@@ -111,7 +111,6 @@ class MyOrders(generics.GenericAPIView):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
         orders = user.orders.all()
-        print(orders)
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
     
@@ -120,9 +119,9 @@ class MyOrderDetails(generics.GenericAPIView):
     def get(self, request, id):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
-        orders = user.orders.all()
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data[0])
+        order = user.orders.get(order_id=id)
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
     
 class MyWishListItems(generics.GenericAPIView):
     permission_classes = [is_auth]
