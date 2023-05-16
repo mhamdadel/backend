@@ -22,7 +22,15 @@ def wishlist_view(request):
             page_number = request.GET.get('page')
             page_obj = paginated.get_page(page_number)
             serializer = WishlistSerializer(page_obj, many=True)
-            return Response({"data": serializer.data})            
+            response_data = {
+            "data": serializer.data,
+            "total_pages": paginated.num_pages,
+            "current_page": page_number,
+            "has_next": page_obj.has_next(),
+            "has_previous": page_obj.has_previous()
+        }
+            return Response(response_data)
+            # return Response({"data": serializer.data})            
 
 @api_view(['POST'])
 @permission_classes([is_auth])

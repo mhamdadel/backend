@@ -37,7 +37,15 @@ def cart(request):
         page = request.GET.get('page')
         cart_items_paginated = paginator.get_page(page)
         serializer = CartItemSerializer(cart_items_paginated, many=True, context={'request': request})
-        return Response({'cart_items': serializer.data})
+        response_data = {
+            "cart_items": serializer.data,
+            "total_pages": paginator.num_pages,
+            "current_page": page,
+            "has_next": cart_items_paginated.has_next(),
+            "has_previous":cart_items_paginated.has_previous()
+        }
+        return Response(response_data)
+        # return Response({'cart_items': serializer.data})
 
 @api_view(['POST'])
 @permission_classes([is_auth])
