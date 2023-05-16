@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
@@ -60,8 +61,10 @@ class LoginAPI(generics.GenericAPIView):
             "token": str(token),
             "user": theUser,
         })
-        response.set_cookie("token", str(token), max_age=7*24*60*60, httponly=True)
-        response.set_cookie("user", theUser, max_age=7*24*60*60, httponly=True)
+        expiration_time = datetime.now() + timedelta(days=7)
+        print("token", str(token))
+        response.set_cookie("token", str(token), httponly=True)
+        response.set_cookie("user", theUser,httponly=True)
         return response
 
 class LogoutAPI(generics.GenericAPIView):
@@ -96,7 +99,6 @@ class ProfileAPIView(generics.RetrieveUpdateAPIView):
         if password:
             instance.set_password(password)
         serializer.save()
-        # add any additional data to the response
         response_data = {
             'user': serializer.data,
             'message': 'Account details updated successfully.'
@@ -109,6 +111,7 @@ class MyOrders(generics.GenericAPIView):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
         orders = user.orders.all()
+        print(orders)
         serializer = OrderSerializer(orders, many=True)
         return Response(serializer.data)
     

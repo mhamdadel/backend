@@ -15,7 +15,7 @@ class Order_ItemSerializer(serializers.ModelSerializer):
     # image= serializers.ImageField(max_length=None, use_url=True,required=False)
     class Meta:
         model = OrderItem
-        fields = ['order','product', 'quantity', 'price', 'image']
+        fields = ['order','product', 'quantity', 'price']
         
     # def create_order_item(self, validated_data):
     #     order_item = OrderItem.objects.create(**validated_data)
