@@ -7,6 +7,7 @@ from rest_framework import permissions
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.parsers import MultiPartParser
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Q
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -114,6 +115,28 @@ class APiProductListView(ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerilaizer
     pagination_class = PageNumberPagination
+
+    def get(self, request):
+        queryset = self.queryset
+        category = request.GET.get('category', None)
+        product = request.GET.get('product', None)
+        sort = request.GET.get('sort', None)  # asc 1 && desc 0
+        
+        if category:
+            queryset = queryset.filter(Category__name__icontains=category)
+
+        if product:
+            queryset = queryset.filter(title__icontains=product)
+        
+        if sort:
+            if sort == '1':
+                queryset = queryset.order_by('price')
+            elif sort == '0':
+                queryset = queryset.order_by('-price')
+
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 
