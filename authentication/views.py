@@ -60,8 +60,8 @@ class LoginAPI(generics.GenericAPIView):
             "token": str(token),
             "user": theUser,
         })
-        response.set_cookie("token", str(token), httponly=True)
-        response.set_cookie("user", theUser, httponly=True)
+        response.set_cookie("token", str(token), max_age=7*24*60*60, httponly=True)
+        response.set_cookie("user", theUser, max_age=7*24*60*60, httponly=True)
         return response
 
 class LogoutAPI(generics.GenericAPIView):
