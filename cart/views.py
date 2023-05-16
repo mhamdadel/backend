@@ -10,35 +10,54 @@ from django.core.paginator import Paginator
 from authentication.views import is_auth
 
 
-@api_view()
+# @api_view()
+# @permission_classes([is_auth])
+# def cart(request):
+#     if request.method == 'GET':
+#          token = request.COOKIES.get('token')      
+#          decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
+#          user_id = decoded_token.get('user_id')        
+#          cart = Cart.objects.filter(user=user_id).order_by('cart_items')
+#          p= Paginator(cart,2)
+#          page = request.GET.get('page')
+#          carts = p.get_page(page)
+#          serializer = CartSerializer(carts , many=True, context={'request': request})
+#          return Response(serializer.data)
+
+@api_view(['GET'])
 @permission_classes([is_auth])
 def cart(request):
     if request.method == 'GET':
-         token = request.COOKIES.get('token')      
-         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
-         user_id = decoded_token.get('user_id')        
-         cart = Cart.objects.filter(user=user_id)
-         p= Paginator(cart,5)
-         page = request.GET.get('page')
-         carts = p.get_page(page)
-         serializer = CartSerializer(carts , many=True, context={'request': request})
-         return Response(serializer.data)
+        token = request.COOKIES.get('token')      
+        decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
+        user_id = decoded_token.get('user_id')        
+        cart = Cart.objects.filter(user=user_id).first()
+        cart_items = cart.cart_items.all().order_by('id')
+        paginator = Paginator(cart_items, 2)
+        page = request.GET.get('page')
+        cart_items_paginated = paginator.get_page(page)
+        serializer = CartItemSerializer(cart_items_paginated, many=True, context={'request': request})
+        response_data = {
+            "cart_items": serializer.data,
+            "total_pages": paginator.num_pages,
+            "current_page": page,
+            "has_next": cart_items_paginated.has_next(),
+            "has_previous":cart_items_paginated.has_previous()
+        }
+        return Response(response_data)
+        # return Response({'cart_items': serializer.data})
 
 @api_view(['POST'])
 @permission_classes([is_auth])
-def add_to_cart(request, id):
+def add_to_cart(request):
     if request.method == 'POST':
         token = request.COOKIES.get('token')      
         decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
         user_id = decoded_token.get('user_id')
-        # quantity =1
-        # quantity =request.data.get('quantity')
-        # if quantity is not None:
-        #     quantity = int(quantity)
+        id=request.data.get('id')
         product = Product.objects.get(id=id)
         instock=product.inStock
         instock=instock-1
-        # print(product.inStock)
         product.inStock = instock  
         product.save() 
         if product:
