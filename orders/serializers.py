@@ -6,24 +6,20 @@ from orders.models import Order
 from rest_framework import serializers
 from ecommerce.serializers import ProductSerilaizer
 
-
 class Order_ItemSerializer(serializers.ModelSerializer):
     order = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
+    # order = serializers.IntegerField(required=True)
     product = ProductSerilaizer(many=False, read_only=True)
     quantity = serializers.IntegerField()
     price = serializers.DecimalField(max_digits=10, decimal_places=2)
     # image= serializers.ImageField(max_length=None, use_url=True,required=False)
     class Meta:
         model = OrderItem
-        fields = ['order','product', 'quantity', 'price']
+        fields = ['order', 'product', 'quantity', 'price']
         
     # def create_order_item(self, validated_data):
     #     order_item = OrderItem.objects.create(**validated_data)
     #     return order_item   
-  
-
-
-    
     
 class OrderSerializer(serializers.ModelSerializer):
     order_items = Order_ItemSerializer(many=True)
