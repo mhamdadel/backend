@@ -36,6 +36,7 @@ class WishlistSerializer(serializers.Serializer):
         product_check = Product.objects.filter(id=product_id).exists()
         if not product_check:
             raise serializers.ValidationError("Product does not exist")
+        # if Wishlist.objects.filter(user_id=user_id, product_id=product_id).exists():
         if Wishlist.objects.filter(user_id=user_id, product_id=product_id).exists():
             raise serializers.ValidationError("Product is already in the Wishlist")
         data['user_id'] = CustomUser.objects.get(id=user_id)

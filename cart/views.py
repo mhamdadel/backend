@@ -70,7 +70,7 @@ def add_to_cart(request):
             # serializer = CartItemSerializer(data={'cart': cart, 'product': product_dict, 'quantity': quantity}, context={'request': request, 'cart': cart, 'method': request.method})
             if serializer.is_valid():
                serializer.save()
-               return Response(serializer.data, status=201)
+               return Response({'message':"Product Added Successfully"}, status=201)
             else:
                return Response(serializer.errors)
         else:
@@ -122,7 +122,7 @@ def cart_item(request,id):
             # print(request.data)
             if serializer.is_valid():
               serializer.save(cart=cart_item.cart, product=cart_item.product)           
-              return Response(serializer.data)
+              return Response({'message':'Quantity Updated Successfully'})
             else:
               return Response(serializer.errors)
           else:
