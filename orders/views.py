@@ -138,15 +138,13 @@ def order_detail(request, order_id):
 
 
 @permission_classes([is_auth])
+@api_view(['post'])
 def cancel_order(request, order_id):
-    
+    print(order_id)
     user_id= get_user_id_from_token(request)
-    order = get_object_or_404(Order, id=order_id, uid=user_id)
-    serializer = OrderSerializer(order)
-    if order.status != 'PENDING':
-        return Response(serializer.data)
-    if timezone.now() > order.createdAt + timezone.timedelta(days=2):
-            order.delete()
+    order = Order.objects.get(order_id=order_id, uid=user_id)
+    order.delete()
+    return Response(status=status.HTTP_202_ACCEPTED)
     
 
 @permission_classes([is_auth])
