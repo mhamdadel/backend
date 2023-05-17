@@ -52,6 +52,7 @@ def add_order(request):
         # user_id = get_user_id_from_token(request)
         # orders = Order.objects.filter(uid=user_id)
         serializer = Order_ItemSerializer(data=request.data)
+        print(request.data)
     if serializer.is_valid():
          serializer.save()
          return Response(serializer.data)
@@ -59,19 +60,19 @@ def add_order(request):
          return Response(serializer.errors)
 
 
-# @api_view(['POST'])
-# @permission_classes([is_auth])
-# def add_order(request):
-#                 user_id= get_user_id_from_token(request)
-#                 user = CustomUser.objects.get(id=user_id)
-#                 # order = Order.objects.create(uid=user)
-#                 order = Order.objects.filter(uid=user).order_by('createdAt').first() or Order.objects.create(uid=user)  
-#                 print(order)       
-#                 order_item = OrderItem.objects.create(order=order)
-#                 print(order_item)
-#                 serializer = Order_ItemSerializer(order_item)
-#                 serializer.save()
-#                 return Response(serializer.data, status=201)                   
+@api_view(['POST'])
+@permission_classes([is_auth])
+def add_order(request):
+                user_id= get_user_id_from_token(request)
+                # user = CustomUser.objects.get(id=user_id)
+                order = Order.objects.create(uid=user_id)
+                order = Order.objects.filter(uid=user_id).order_by('createdAt').first() or Order.objects.create(uid=user)  
+                print(order)       
+                order_item = OrderItem.objects.create(order=order)
+                print(order_item)
+                serializer = Order_ItemSerializer(order_item)
+                serializer.save()
+                return Response(serializer.data, status=201)                   
               
 
 
