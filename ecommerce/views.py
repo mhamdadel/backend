@@ -86,13 +86,14 @@ class ProductList(generics.ListAPIView):
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerilaizer
-    lookup_field = 'title'
+    lookup_field = 'id'
 
-    def get(self, request, title):
+    def get(self, request, id):
         try:
-            queryset = Product.objects.get(title = title)
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data[0])
+            queryset = Product.objects.get(pk = id)
+            serializer = self.get_serializer(queryset)
+            print (queryset.id)
+            return Response(serializer.data)
         except Exception as e:
             return Response({
                 "message": str(e),
