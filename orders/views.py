@@ -98,9 +98,9 @@ def add_order(request):
         order_item = OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
         order_item.save()
 
-    cart = Cart.objects.get(user_id=user_id)
-    cart_items = cart.cart_items.all()
-    cart_items.delete()
+    # cart = Cart.objects.get(user_id=user_id)
+    # cart_items = cart.cart_items.all()
+    # cart_items.delete()
     order_items.append(order_item)
     order_item_serializer = Order_ItemSerializer(order_items, many=True)
     response_data = {
@@ -143,14 +143,27 @@ def cancel_order(request, order_id):
     print(order_id)
     user_id= get_user_id_from_token(request)
     order = Order.objects.get(order_id=order_id, uid=user_id)
+    total_amount = order.get_total_amount()-20
+    cancellation_fees = order.get_cancellation_fees()
+    data = {
+        'total_amount': total_amount,
+        'cancellation_fees': cancellation_fees+20,
+    }
+    # order.delete()
+    return Response(data,status=status.HTTP_202_ACCEPTED)
+ 
+ 
+@permission_classes([is_auth])
+@api_view(['DELETE'])
+def delete_order(request, order_id):
+    print(order_id)
+    user_id= get_user_id_from_token(request)
+    order = Order.objects.get(order_id=order_id, uid=user_id)
     order.delete()
-    return Response(status=status.HTTP_202_ACCEPTED)
-    
+    return Response(status=status.HTTP_202_ACCEPTED)   
 
 @permission_classes([is_auth])
 def check_out(request, order_id):
     request.session['order_id']=order_id
     Cart.clear()
     return redirect(reverse('payment:process'))
-
-

@@ -111,8 +111,9 @@ class MyOrders(generics.GenericAPIView):
         myId = jwt.decode(request.COOKIES.get('token'), "PROJECT!@#%^2434", "HS256").get('user_id')
         user = CustomUser.objects.get(id=myId)
         orders = user.orders.all()
+  
         serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+        return Response( serializer.data)
     
 class MyOrderDetails(generics.GenericAPIView):
     permission_classes = [is_auth]
