@@ -56,7 +56,8 @@ def add_order(request):
          serializer.save()
          return Response(serializer.data)
     else:
-         return Response(serializer.errors)
+        print('error')
+        return Response(serializer.errors)
 
 
 # @api_view(['POST'])
