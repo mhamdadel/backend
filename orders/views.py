@@ -53,21 +53,13 @@ def order_list(request):
 #     if request.method == 'POST':
 #         # user_id = get_user_id_from_token(request)
 #         # orders = Order.objects.filter(uid=user_id)
-#         print (request.data)
-#         #  ['order','product', 'quantity', 'price']
-#         # address / phone / cart data 
-#         # product_id = product # product = product_id
-        
-#         # create order
-#         # order _id 
-#         # insert in order [items = cart_data]
 #         serializer = Order_ItemSerializer(data=request.data)
+#         print(request.data)
 #     if serializer.is_valid():
 #          serializer.save()
 #          return Response(serializer.data)
 #     else:
-#         print('error')
-#         return Response(serializer.errors)
+#          return Response(serializer.errors)
 
 
 # @api_view(['POST'])
@@ -76,9 +68,8 @@ def order_list(request):
 #                 user_id= get_user_id_from_token(request)
 #                 # user = CustomUser.objects.get(id=user_id)
 #                 order = Order.objects.create(uid=user_id)
-#                 # order = Order.objects.filter(uid=user_id).order_by('createdAt').first() or Order.objects.create(uid=user_id)  
-#                 print(order)
-                
+#                 order = Order.objects.filter(uid=user_id).order_by('createdAt').first() or Order.objects.create(uid=user)  
+#                 print(order)       
 #                 order_item = OrderItem.objects.create(order=order)
 #                 print(order_item)
 #                 serializer = Order_ItemSerializer(order_item)
