@@ -80,10 +80,9 @@ def order_list(request):
 @permission_classes([is_auth])
 def add_order(request):
     user_id = get_user_id_from_token(request)
+    user = CustomUser.objects.get(id=user_id)
     shipping_address = request.data.get('shipping_address')
     phone_number = request.data.get('phone_number')
-    print("#############################################")
-    print(request.data.get('cart_data'))
     cart_data = request.data.get('cart_data')[0]
 
     order = Order.objects.create(uid_id=user_id, shipping_address=shipping_address, phone_number=phone_number, status="pending")
@@ -99,8 +98,10 @@ def add_order(request):
         order_item = OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
         order_item.save()
 
-        order_items.append(order_item)
-
+    cart = Cart.objects.get(user_id=user_id)
+    cart_items = cart.cart_items.all()
+    cart_items.delete()
+    order_items.append(order_item)
     order_item_serializer = Order_ItemSerializer(order_items, many=True)
     response_data = {
         'order': order_serializer.data,
