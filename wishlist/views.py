@@ -17,20 +17,8 @@ def wishlist_view(request):
             decoded_token = jwt.decode(token, "PROJECT!@#%^2434", algorithms=["HS256"])
             user_id = decoded_token.get('user_id')
             wishlist = Wishlist.objects.filter(user_id=user_id).order_by('id').select_related('product_id')
-            wishlist_items=wishlist.all().order_by('id');      
-            paginated = Paginator(wishlist_items, per_page=1)
-            page_number = request.GET.get('page')
-            page_obj = paginated.get_page(page_number)
-            serializer = WishlistSerializer(page_obj, many=True)
-            response_data = {
-            "data": serializer.data,
-            "total_pages": paginated.num_pages,
-            "current_page": page_number,
-            "has_next": page_obj.has_next(),
-            "has_previous": page_obj.has_previous()
-        }
-            return Response(response_data)
-            # return Response({"data": serializer.data})            
+            serializer = WishlistSerializer(wishlist, many=True)
+            return Response({"data": serializer.data})            
 
 @api_view(['POST'])
 @permission_classes([is_auth])
@@ -41,7 +29,7 @@ def wishlist_add(request):
          serializer = WishlistSerializer(data=data, context={'request': request})  
          if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response({'message':"Product Added to the Wishlist"})
          else:
              return Response(serializer.errors)
 
