@@ -132,25 +132,33 @@ def order_detail(request, order_id):
     user_id= get_user_id_from_token(request)
     # custom_user = CustomUser.objects.get(email=request.user.email)
     # order = get_object_or_404(Order, order_id=order_id, uid=user_id)
-    order = get_object_or_404(Order.objects, order_id=order_id, uid=user_id)
-    serializer = OrderSerializer(order)
-    return Response(serializer.get_order_items(order))
+    if(Order.objects.filter(uid=user_id)):
+        if(OrderItem.objects.filter(id=order_id)):
+          order = get_object_or_404(Order.objects, order_id=order_id, uid=user_id)
+          serializer = OrderSerializer(order)
+          return Response(serializer.get_order_items(order))
+        else:
+            return Response({'message':'Item not found'})
 
 
 @permission_classes([is_auth])
 @api_view(['post'])
 def cancel_order(request, order_id):
-    print(order_id)
-    user_id= get_user_id_from_token(request)
-    order = Order.objects.get(order_id=order_id, uid=user_id)
-    total_amount = order.get_total_amount()-20
+    user_id = get_user_id_from_token(request)
+    try:
+        order = Order.objects.get(order_id=order_id, uid=user_id)
+    except Order.DoesNotExist:
+        return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
+    total_amount = order.get_total_amount() - 20
     cancellation_fees = order.get_cancellation_fees()
+    order.status = 'Cancelled'
+    order.cancellation_fees = cancellation_fees + 20
+    order.save()
     data = {
         'total_amount': total_amount,
-        'cancellation_fees': cancellation_fees+20,
+        'cancellation_fees': order.cancellation_fees,
     }
-    # order.delete()
-    return Response(data,status=status.HTTP_202_ACCEPTED)
+    return Response(data, status=status.HTTP_202_ACCEPTED)
  
  
 @permission_classes([is_auth])
@@ -158,9 +166,12 @@ def cancel_order(request, order_id):
 def delete_order(request, order_id):
     print(order_id)
     user_id= get_user_id_from_token(request)
-    order = Order.objects.get(order_id=order_id, uid=user_id)
+    try:
+     order = Order.objects.get(order_id=order_id, uid=user_id)
+    except Order.DoesNotExist:
+        return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
     order.delete()
-    return Response(status=status.HTTP_202_ACCEPTED)   
+    return Response({'message': 'Deleted Successfully'},status=status.HTTP_202_ACCEPTED)   
 
 @permission_classes([is_auth])
 def check_out(request, order_id):
