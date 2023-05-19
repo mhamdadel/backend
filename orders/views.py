@@ -173,8 +173,4 @@ def delete_order(request, order_id):
     order.delete()
     return Response({'message': 'Deleted Successfully'},status=status.HTTP_202_ACCEPTED)   
 
-@permission_classes([is_auth])
-def check_out(request, order_id):
-    request.session['order_id']=order_id
-    Cart.clear()
-    return redirect(reverse('payment:process'))
+
