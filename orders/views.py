@@ -98,9 +98,9 @@ def add_order(request):
         order_item = OrderItem.objects.create(order=order, product=product, quantity=quantity, price=price)
         order_item.save()
 
-    # cart = Cart.objects.get(user_id=user_id)
-    # cart_items = cart.cart_items.all()
-    # cart_items.delete()
+    cart = Cart.objects.get(user_id=user_id)
+    cart_items = cart.cart_items.all()
+    cart_items.delete()
     order_items.append(order_item)
     order_item_serializer = Order_ItemSerializer(order_items, many=True)
     response_data = {
