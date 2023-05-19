@@ -149,10 +149,10 @@ def cancel_order(request, order_id):
         order = Order.objects.get(order_id=order_id, uid=user_id)
     except Order.DoesNotExist:
         return Response({'message': 'Order not found'}, status=status.HTTP_404_NOT_FOUND)
-    total_amount = order.get_total_amount() - 20
+    total_amount = order.get_total_amount()
     cancellation_fees = order.get_cancellation_fees()
     order.status = 'Cancelled'
-    order.cancellation_fees = cancellation_fees + 20
+    order.cancellation_fees = cancellation_fees 
     order.save()
     data = {
         'total_amount': total_amount,

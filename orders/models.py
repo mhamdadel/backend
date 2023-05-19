@@ -24,23 +24,24 @@ class Order(models.Model):
         ('Cancelled','Cancelled')
     ]
     status = models.CharField(max_length=20,choices= status_choices, default='PENDING')
-    def get_total_amount(self):
-        order_items = self.order_items.all()
-        if(order_items.exists()):
-          total=sum(item.get_total() for item in order_items)
-          return total-self.get_cancellation_fees()
-        else:return 0
+
     
     def get_cancellation_fees(self):
         cancellation_fees = 0
         order_date = self.createdAt
         current_date = timezone.now()
         days_difference = (current_date - order_date).days
+        print(days_difference)
         if days_difference > 2:
-            cancellation_fees = 20
+            cancellation_fees = 500
         return cancellation_fees
     
-    
+    def get_total_amount(self):
+        order_items = self.order_items.all()
+        if(order_items.exists()):
+          total=sum(item.get_total() for item in order_items)
+          return total-self.get_cancellation_fees()
+        else:return 0
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
     product=models.ForeignKey(Product,on_delete=models.CASCADE,related_name="products",default=6)
