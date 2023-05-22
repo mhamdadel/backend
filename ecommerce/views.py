@@ -1,3 +1,4 @@
+import os
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -92,7 +93,8 @@ class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
         try:
             queryset = Product.objects.get(pk = id)
             serializer = self.get_serializer(queryset)
-            print (queryset.id)
+
+           
             return Response(serializer.data)
         except Exception as e:
             return Response({

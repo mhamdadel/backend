@@ -10,12 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import cloudinary
-
+from dotenv import load_dotenv
 from datetime import timedelta
 import os
 from pathlib import Path
 
 import dj_database_url
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -126,7 +128,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-  'default': dj_database_url.parse('postgres://dajngo_project_user:5ulnvH9MR7mByxmuEMrgPefZJA5ZBBW9@dpg-chbqnprhp8u0162j3dng-a.oregon-postgres.render.com/dajngo_project')
+  'default': dj_database_url.parse(os.environ.get('DBLink'))
 }
 
 # DATABASES = {
