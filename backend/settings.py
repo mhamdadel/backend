@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
 ]
 
 AUTH_USER_MODEL = 'authentication.CustomUser'
@@ -173,7 +174,7 @@ USE_TZ = True
 
 #django paypal settings
 PAYPAL_TEST=True,
-PAYPAL_RECEIVER_EMAIL='merehan.yehia.abdellatif@gmail.com',
+PAYPAL_RECEIVER_EMAIL=os.environ.get('PAYPAL_RECEIVER_EMAIL'),
 
 
 # Static files (CSS, JavaScript, Images)
