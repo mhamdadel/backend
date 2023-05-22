@@ -188,8 +188,9 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 
-cloudinary.config(cloud_name='deg0m2eu4',
-                  api_key='137771358466589',
-                  api_secret='oJqNBAgaFpMfRxoCbWpkV6qR060')
+cloudinary.config(cloud_name=os.environ.get('CLOUD_NAME'),
+                  api_key=os.environ.get('API_KEY'),
+                  api_secret=os.environ.get('API_SECERT')
+)
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
