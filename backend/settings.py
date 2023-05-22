@@ -181,8 +181,9 @@ PAYPAL_RECEIVER_EMAIL=os.environ.get('PAYPAL_RECEIVER_EMAIL'),
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static'),
 STATICFILES_DIRS = [
-   
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Default primary key field type
@@ -195,3 +196,4 @@ cloudinary.config(cloud_name=os.environ.get('CLOUD_NAME'),
 )
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

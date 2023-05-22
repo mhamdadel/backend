@@ -1,0 +1,24 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "backend/asgi.py",
+        "use": "@vercel/python"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/manage.py"
+      }
+    ],
+    "env": {
+      "DJANGO_SETTINGS_MODULE": "backend.settings"
+    },
+    "functions": {
+      "api": {
+        "handler": "django_handler",
+        "runtime": "python3.11"
+      }
+    }
+  }
