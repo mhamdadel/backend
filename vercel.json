@@ -4,17 +4,25 @@
       {
         "src": "backend/wsgi.py",
         "use": "@vercel/python"
+      },
+      {
+        "src": "build_files.sh",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "staticfiles_build"
+        }
       }
     ],
     "routes": [
       {
-        "src": "/(.*)",
-        "dest": "/manage.py"
+        "src": "/static/(.*)",
+        "dest": "/static/$1"
+      },
+      {
+        "src": "(.*)",
+        "dest": "backend/wsgi.py"
       }
     ],
-    "env": {
-      "DJANGO_SETTINGS_MODULE": "backend.settings"
-    },
     "functions": {
       "api": {
         "handler": "django_handler",
